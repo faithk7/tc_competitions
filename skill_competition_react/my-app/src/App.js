@@ -8,6 +8,8 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 
+import { Panel, Placeholder } from 'rsuite';
+
 import './App.css';
 
 const ExampleToast = ({ children }) => {
@@ -50,7 +52,13 @@ const App = () => (
         </Navbar.Collapse>
       </Container>
     </Navbar>
-  </Container>
+
+    {/* TODO: Add a panel to show the login/sign up information */}
+    <Panel header="Panel title">
+        <Placeholder.Paragraph />
+    </Panel>
+
+    </Container>
 );
 
 export default App;
