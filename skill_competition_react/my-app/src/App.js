@@ -1,64 +1,159 @@
-import React, { useState } from 'react';
+import React from "react";
 
-import Toast from 'react-bootstrap/Toast';
-import Container from 'react-bootstrap/Container';
-import Button from 'react-bootstrap/Button';
-
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
-
+import { Button } from "rsuite";
+import "rsuite/dist/rsuite.min.css";
 import { Panel, Placeholder } from 'rsuite';
+import { Input, InputGroup } from 'rsuite';
+import EyeIcon from '@rsuite/icons/legacy/Eye';
+import EyeSlashIcon from '@rsuite/icons/legacy/EyeSlash';
 
-import './App.css';
+import { app } from './firebase-config.js';
 
-const ExampleToast = ({ children }) => {
-  const [show, toggleShow] = useState(true);
+import {
+    BrowserRouter as Router,
+    Routes,
+    Route
+} from "react-router-dom";
 
-  return (
-    <>
-      {!show && <Button onClick={() => toggleShow(true)}>Show Toast</Button>}
-      <Toast show={show} onClose={() => toggleShow(false)}>
-        <Toast.Header>
-          <strong className="mr-auto">React-Bootstrap</strong>
-        </Toast.Header>
-        <Toast.Body>{children}</Toast.Body>
-      </Toast>
-    </>
-  );
-};
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth'
 
-const App = () => (
-  <Container className="p-3">
-    <Container className="p-5 mb-4 bg-light rounded-3">
-      <h1 className="header">Welcome To React-Bootstrap</h1>
-      <ExampleToast>
-        We now have Toasts
-        <span role="img" aria-label="tada">
-          🎉
-        </span>
-      </ExampleToast>
-    </Container>
 
-    <Navbar bg="light" expand="lg">
-      <Container>
-        <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
-        {/* <Navbar.Toggle aria-controls="basic-navbar-nav" /> */}
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav>
-            <Nav.Link href="#home" class="float-right">Home</Nav.Link>
-            <Nav.Link href="#link" class="floag-right">Link</Nav.Link>
-          </Nav>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
+import { MyNavbar } from "./navbar";
 
-    {/* TODO: Add a panel to show the login/sign up information */}
-    <Panel header="Panel title">
+const MyApp = () => {
+    return (
+        <div>
+            {/* <p>Please fork this example, reproduce the problem you are issue.</p> */}
+            {/* <Button>React Suite</Button> */}
+            <MyNavbar></MyNavbar>
+            <hr />
+            <MyPanel></MyPanel>
+        </div>
+    );
+}
+
+const MyPanel = () => (
+    <Panel header="Panel title" bordered>
         <Placeholder.Paragraph />
+        <hr />
+        <InputLogin></InputLogin>
+        <br /><br />
+        <InputRegister></InputRegister>
     </Panel>
-
-    </Container>
 );
 
-export default App;
+const styles = {
+    width: 300
+};
+
+const InputLogin = () => {
+    const [visible, setVisible] = React.useState(false);
+
+    const handleChange = () => {
+        setVisible(!visible);
+    };
+    return (
+        <div>
+            <span>User Login Name</span>
+            <InputGroup inside style={styles}>
+                <Input/>
+            </InputGroup>
+            <br />
+            <span>User Password</span>
+            <InputGroup inside style={styles}>
+                <Input type={visible ? 'text' : 'password'} />
+                <InputGroup.Button onClick={handleChange}>
+                    {visible ? <EyeIcon /> : <EyeSlashIcon />}
+                </InputGroup.Button>
+            </InputGroup>
+            <br />
+            <div>
+                <Button appearance="primary">Login</Button>
+                <Button appearance="link">New User? Register a New Account</Button>
+            </div>
+        </div>
+    );
+};
+
+
+const InputRegister = () => {
+    const [visible, setVisible] = React.useState(false);
+    const [userLoginName, setUserLoginName] = React.useState('');
+    const [userEmail, setUserEmail] = React.useState('');
+    const [userPassword, setUserPassword] = React.useState('');
+
+    const handleChange = () => {
+        setVisible(!visible);
+    };
+
+    // const handleUserLoginName = (string) => {
+    //     console.log(document.getElementById("test"));
+    //     setUserLoginName(string);
+    // };
+
+    const handleClickRegister = () => {
+        setFormFields();
+    };
+
+    const setFormFields = () => {
+        const userLoginNameInput = document.getElementById('userLoginName').value;
+        const userEmailInput = document.getElementById('userEmail').value;
+        const userPasswordInput = document.getElementById('userPasswordInput').value;
+        const userPasswordReInput = document.getElementById('userPasswordReInput').value;
+
+        // TODO: if any of the fields is empty, notify users about the empty fields
+
+        // TODO: check whether the two passwords are the same, if not, output
+        // the error dialog
+
+        setUserLoginName(userLoginNameInput);
+        setUserEmail(userEmailInput);
+        setUserPassword(userPasswordInput);
+
+        console.log(userLoginName);
+        console.log(userEmailInput);
+        console.log(userPassword);
+
+        // begin the authentication process
+        const auth = getAuth(app);
+        createUserWithEmailAndPassword(auth, userEmail, userPassword);
+    };
+
+
+
+    // function delay(time) {
+    //     return new Promise(resolve => setTimeout(resolve, time));
+    //   }
+
+    return (
+        <div>
+            <span>User Login Name</span>
+            <InputGroup inside style={styles}>
+                <Input id='userLoginName' />
+            </InputGroup>
+            <br />
+            <span>User Email</span>
+            <InputGroup inside style={styles}>
+                <Input id='userEmail' />
+            </InputGroup>
+            <br />
+            <span>User Password</span>
+            <InputGroup inside style={styles}>
+                <Input id='userPasswordInput'/>
+            </InputGroup>
+            <br />
+            <span>Confirm User Password</span>
+            <InputGroup inside style={styles}>
+                <Input id='userPasswordReInput' />
+            </InputGroup>
+            <br />
+            <div>
+                <Button appearance="primary" onClick={handleClickRegister}>Register</Button>
+                <Button appearance="link">Already has an account? Login here</Button>
+            </div>
+        </div>
+    );
+};
+
+// export default App;
+export { MyApp };
