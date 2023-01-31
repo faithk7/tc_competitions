@@ -118,13 +118,30 @@ const InputRegister = () => {
         setVisible(!visible);
     };
 
-    // const handleUserLoginName = (string) => {
-    //     console.log(document.getElementById("test"));
-    //     setUserLoginName(string);
-    // };
+    const handleUserLoginName = (input) => {
+        // console.log(document.getElementById("test"));
+        setUserLoginName(input);
+        console.log(userLoginName);
+    };
+
+    const handleUserEmail = (input) => {
+        setUserEmail(input);
+        console.log(userEmail);
+    };
+
+    const handleUserPassword = (input) => {
+        // console.log(document.getElementById("test"));
+        setUserPassword(input);
+        console.log(userPassword);
+    };
+
+    const handleUserPasswordReInput = (string) => {
+        // console.log(document.getElementById("test"));
+        // setUserLoginName(string);
+    };
 
     const handleClickRegister = () => {
-        setFormFields();
+        // setFormFields();
 
         // begin the authentication process
         const auth = getAuth(app);
@@ -159,8 +176,6 @@ const InputRegister = () => {
         console.log(userPassword);
     };
 
-
-
     // function delay(time) {
     //     return new Promise(resolve => setTimeout(resolve, time));
     //   }
@@ -169,22 +184,22 @@ const InputRegister = () => {
         <div>
             <span>User Login Name</span>
             <InputGroup inside style={styles}>
-                <Input id='userLoginName' />
+                <Input id='userLoginName' onChange={handleUserLoginName}/>
             </InputGroup>
             <br />
             <span>User Email</span>
             <InputGroup inside style={styles}>
-                <Input id='userEmailInput' />
+                <Input id='userEmailInput' onChange={handleUserEmail}/>
             </InputGroup>
             <br />
             <span>User Password</span>
             <InputGroup inside style={styles}>
-                <Input id='userPasswordInput'/>
+                <Input id='userPasswordInput' onChange={handleUserPassword}/>
             </InputGroup>
             <br />
             <span>Confirm User Password</span>
             <InputGroup inside style={styles}>
-                <Input id='userPasswordReInput' />
+                <Input id='userPasswordReInput' onChange={handleUserPasswordReInput}/>
             </InputGroup>
             <br />
             <div>
