@@ -48,27 +48,59 @@ const styles = {
 
 const InputLogin = () => {
     const [visible, setVisible] = React.useState(false);
+    const [userEmail, setUserEmail] = React.useState('');
+    const [userPassword, setUserPassword] = React.useState('');
 
     const handleChange = () => {
         setVisible(!visible);
     };
+
+    const handleClickLogin = () => {
+        // set up field values
+        const userEmailInput = document.getElementById('userEmail').value;
+        const userPasswordInput = document.getElementById('userPassword').value;
+        const auth = getAuth(app);
+
+        setUserEmail(userEmailInput);
+        setUserPassword(userPasswordInput);
+
+        console.log(userEmailInput);
+        console.log(userEmail);
+
+        // login, checking whether the username/password pair exists
+        signInWithEmailAndPassword(auth, userEmail, userPassword)
+            .then((userCredential) => {
+                // Signed in
+                const user = userCredential.user;
+                console.log('logged in');
+            })
+            .catch((error) => {
+                console.log('failed');
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(errorCode);
+                console.log(errorMessage);
+            });
+        // if not, inform users about that
+    }
+
     return (
         <div>
-            <span>User Login Name</span>
+            <span>User Email</span>
             <InputGroup inside style={styles}>
-                <Input/>
+                <Input id='userEmail' />
             </InputGroup>
             <br />
             <span>User Password</span>
             <InputGroup inside style={styles}>
-                <Input type={visible ? 'text' : 'password'} />
+                <Input id='userPassword' type={visible ? 'text' : 'password'} />
                 <InputGroup.Button onClick={handleChange}>
                     {visible ? <EyeIcon /> : <EyeSlashIcon />}
                 </InputGroup.Button>
             </InputGroup>
             <br />
             <div>
-                <Button appearance="primary">Login</Button>
+                <Button appearance="primary" onClick={handleClickLogin}>Login</Button>
                 <Button appearance="link">New User? Register a New Account</Button>
             </div>
         </div>
@@ -93,11 +125,15 @@ const InputRegister = () => {
 
     const handleClickRegister = () => {
         setFormFields();
+
+        // begin the authentication process
+        const auth = getAuth(app);
+        createUserWithEmailAndPassword(auth, userEmail, userPassword);
     };
 
-    const setFormFields = () => {
+    const setFormFields = async () => {
         const userLoginNameInput = document.getElementById('userLoginName').value;
-        const userEmailInput = document.getElementById('userEmail').value;
+        const userEmailInput = document.getElementById('userEmailInput').value;
         const userPasswordInput = document.getElementById('userPasswordInput').value;
         const userPasswordReInput = document.getElementById('userPasswordReInput').value;
 
@@ -106,17 +142,21 @@ const InputRegister = () => {
         // TODO: check whether the two passwords are the same, if not, output
         // the error dialog
 
-        setUserLoginName(userLoginNameInput);
-        setUserEmail(userEmailInput);
-        setUserPassword(userPasswordInput);
+        setTimeout(() => {
+            setUserLoginName(userLoginNameInput);
+            setUserEmail(userEmailInput);
+            setUserPassword(userPasswordInput);
+        }, 1000);
+
+        // setTimeout(() => {
+        //     console.log(userLoginName);
+        //     console.log(userEmailInput);
+        //     console.log(userPassword);
+        // }, 2000);
 
         console.log(userLoginName);
         console.log(userEmailInput);
         console.log(userPassword);
-
-        // begin the authentication process
-        const auth = getAuth(app);
-        createUserWithEmailAndPassword(auth, userEmail, userPassword);
     };
 
 
@@ -134,7 +174,7 @@ const InputRegister = () => {
             <br />
             <span>User Email</span>
             <InputGroup inside style={styles}>
-                <Input id='userEmail' />
+                <Input id='userEmailInput' />
             </InputGroup>
             <br />
             <span>User Password</span>
