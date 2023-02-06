@@ -9,16 +9,17 @@ import EyeSlashIcon from '@rsuite/icons/legacy/EyeSlash';
 
 import { app } from './firebase-config.js';
 
-import {
-    BrowserRouter as Router,
-    Routes,
-    Route
-} from "react-router-dom";
 
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth'
 
 
 import { MyNavbar } from "./navbar";
+
+import {
+    BrowserRouter as Router,
+    Routes,
+    Route
+} from "react-router-dom";
 
 const MyApp = () => {
     return (
@@ -30,15 +31,18 @@ const MyApp = () => {
             <MyPanel></MyPanel>
         </div>
     );
-}
+};
 
 const MyPanel = () => (
     <Panel header="Panel title" bordered>
         <Placeholder.Paragraph />
         <hr />
-        <InputLogin></InputLogin>
-        <br /><br />
-        <InputRegister></InputRegister>
+        <Routes>
+            <Route path='/login' element={<InputLogin></InputLogin>}>
+            </Route>
+            <Route path='/register' element={<InputRegister></InputRegister>}>
+            </Route>
+        </Routes>
     </Panel>
 );
 
@@ -110,6 +114,9 @@ const InputLogin = () => {
 
 const InputRegister = () => {
     const [visible, setVisible] = React.useState(false);
+    // const [userLoginNameErr, setUserLoginNameErr] = React.useState(false);
+    // const [visible, setVisible] = React.useState(false);
+    // const [visible, setVisible] = React.useState(false);
     const [userLoginName, setUserLoginName] = React.useState('');
     const [userEmail, setUserEmail] = React.useState('');
     const [userPassword, setUserPassword] = React.useState('');
@@ -121,18 +128,18 @@ const InputRegister = () => {
     const handleUserLoginName = (input) => {
         // console.log(document.getElementById("test"));
         setUserLoginName(input);
-        console.log(userLoginName);
+        // console.log(userLoginName);
     };
 
     const handleUserEmail = (input) => {
         setUserEmail(input);
-        console.log(userEmail);
+        // console.log(userEmail);
     };
 
     const handleUserPassword = (input) => {
         // console.log(document.getElementById("test"));
         setUserPassword(input);
-        console.log(userPassword);
+        // console.log(userPassword);
     };
 
     const handleUserPasswordReInput = (string) => {
@@ -141,44 +148,31 @@ const InputRegister = () => {
     };
 
     const handleClickRegister = () => {
-        // setFormFields();
+        doSanityCheck(); 
 
         // begin the authentication process
         const auth = getAuth(app);
         createUserWithEmailAndPassword(auth, userEmail, userPassword);
     };
 
-    const setFormFields = async () => {
-        const userLoginNameInput = document.getElementById('userLoginName').value;
-        const userEmailInput = document.getElementById('userEmailInput').value;
-        const userPasswordInput = document.getElementById('userPasswordInput').value;
-        const userPasswordReInput = document.getElementById('userPasswordReInput').value;
+    const doSanityCheck = () => {
+        const validLoginName = new RegExp('^[a-zA-Z]');
+        const validEmail = new RegExp('^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]$');
+        const validPassword = new RegExp('^(?=.*?[A-Za-z])(?=.*?[0-9]).{6,}$');
 
-        // TODO: if any of the fields is empty, notify users about the empty fields
+        // the format of the login name should be correct - shoud not start with the number/special characteter        
 
-        // TODO: check whether the two passwords are the same, if not, output
-        // the error dialog
+        // the format of the user email should be correct
 
-        setTimeout(() => {
-            setUserLoginName(userLoginNameInput);
-            setUserEmail(userEmailInput);
-            setUserPassword(userPasswordInput);
-        }, 1000);
+        // the format of the password should be correct
 
-        // setTimeout(() => {
-        //     console.log(userLoginName);
-        //     console.log(userEmailInput);
-        //     console.log(userPassword);
-        // }, 2000);
+        // the user login name should not be already in the database
 
-        console.log(userLoginName);
-        console.log(userEmailInput);
-        console.log(userPassword);
+        // the user email should not be already in the database
+
+        // the two passwords should be the same
+
     };
-
-    // function delay(time) {
-    //     return new Promise(resolve => setTimeout(resolve, time));
-    //   }
 
     return (
         <div>
